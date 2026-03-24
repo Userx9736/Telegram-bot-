@@ -1,6 +1,8 @@
+import os
 import yt_dlp
 from telegram import Update
 from telegram.ext import ApplicationBuilder, MessageHandler, filters, ContextTypes
+
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
 
 async def handle(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -19,10 +21,9 @@ async def handle(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         await update.message.reply_video(video=open('video.mp4', 'rb'))
 
-    except:
-        await update.message.reply_text("Failed to download")
+    except Exception as e:
+        await update.message.reply_text(f"Error: {str(e)}")
 
 app = ApplicationBuilder().token(BOT_TOKEN).build()
-app.add_handler(MessageHandler(filters.TEXT, handle))
-
+app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle))
 app.run_polling()
