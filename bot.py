@@ -1,3 +1,4 @@
+
 import os
 import yt_dlp
 from telegram import Update
@@ -13,11 +14,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         f"👋 Welcome {name}!\n\n"
         "🤖 I am a Premium Video Downloader Bot!\n\n"
-        "📥 I can download from:\n"
-        "▶️ YouTube (Video & Audio)\n"
-        "📸 Instagram\n"
-        "📘 Facebook\n\n"
-        "Simply send me any link and I'll download it for you!\n\n"
+        "📥 Send me any YouTube or Facebook link!\n\n"
+        "🎵 For audio: send link + /audio\n\n"
         "⚡ Powered by Premium Bot"
     )
 
@@ -31,17 +29,14 @@ async def handle(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("🎵 Downloading audio... Please wait!")
         ydl_opts = {
             'format': 'bestaudio/best',
-            'outtmpl': 'audio.%(ext)s',
+            'outtmpl': '/tmp/audio.%(ext)s',
             'quiet': True,
-            'postprocessors': [{
-                'key': 'FFmpegExtractAudio',
-                'preferredcodec': 'mp3',
-            }],
         }
         try:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                ydl.download([url])
-            await update.message.reply_audio(audio=open('audio.mp3', 'rb'))
+                info = ydl.extract_info(url, download=True)
+                filename = ydl.prepare_filename(info)
+            await update.message.reply_audio(audio=open(filename, 'rb'))
         except Exception as e:
             await update.message.reply_text(f"❌ Error: {str(e)}")
         return
@@ -49,17 +44,18 @@ async def handle(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # Video download
     await update.message.reply_text("⬇️ Downloading video... Please wait!")
     ydl_opts = {
-        'format': 'best',
-        'outtmpl': 'video.%(ext)s',
+        'format': 'best[ext=mp4]/best',
+        'outtmpl': '/tmp/video.%(ext)s',
         'quiet': True,
     }
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            ydl.download([url])
+            info = ydl.extract_info(url, download=True)
+            filename = ydl.prepare_filename(info)
         await update.message.reply_text("📤 Uploading... Almost done!")
-        await update.message.reply_video(video=open('video.mp4', 'rb'))
+        await update.message.reply_video(video=open(filename, 'rb'))
     except Exception as e:
-        await update.message.reply_text(f"❌ Error: {str(e)}\n\nMake sure the link is valid!")
+        await update.message.reply_text(f"❌ Error: {str(e)}")
 
 async def stats(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(f"👥 Total Users: {len(user_set)}")
