@@ -1,5 +1,5 @@
 
 python-telegram-bot
 yt-dlp
-instaloader
 requests
+instaloader
