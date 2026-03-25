@@ -1,4 +1,4 @@
-Go to GitHub → requirements.txt → ✏️ edit → paste this:
+
 python-telegram-bot
 yt-dlp
 instaloader
