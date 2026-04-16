@@ -1,5 +1,4 @@
 python-telegram-bot==20.7
-yt-dlp
-instaloader
-requests
-ffmpeg-python
+yt-dlp>=2024.4.9
+instaloader>=4.10
+requests>=2.31.0
