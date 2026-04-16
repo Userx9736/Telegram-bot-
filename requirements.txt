@@ -1,5 +1,4 @@
-python-telegram-bot>=20.0
+python-telegram-bot==20.7
 yt-dlp
 requests
-ffmpeg-python
-instaloader
+Pillow
