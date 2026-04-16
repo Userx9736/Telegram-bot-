@@ -1,4 +1,2 @@
 python-telegram-bot==20.3
-yt-dlp==2024.4.9
-instaloader==4.10.1
-requests==2.31.0
+yt-dlp
